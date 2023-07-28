@@ -1,12 +1,37 @@
-image: mortenson/tome
+image:
+  file: .gitpod/Dockerfile
+
 tasks:
   - init: |
-      COMPOSER_MEMORY_LIMIT=2048M composer install
-      [ -d content ] && drush tome:install -y
+      .gitpod/scripts/ddev-download-images.sh
+      .gitpod/scripts/ddev-setup.sh
+      .gitpod/scripts/drupal-setup.sh
     command: |
-      [ ! -d content ] && echo "Looks like you haven't initialized a Tome site yet - make sure to composer require any profiles you want to use, then run drush tome:init to get started!"
-      [ -d content ] && drush uli -l $(gp url 8888)
-      [ -d content ] && drush runserver 0.0.0.0:8888
+      .gitpod/scripts/ddev-setup.sh
+      cat .gitpod/WELCOME.md
+      ddev drush user:login
+
 ports:
-  - port: 8888
+  - port: 2222
     onOpen: ignore
+  - port: 3306
+    onOpen: ignore
+  - port: 8025
+    onOpen: ignore
+  - port: 8036
+    onOpen: ignore
+  - port: 8080
+    onOpen: ignore
+  - port: 9000
+    onOpen: ignore
+
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: true
+    addCheck: true
+    addComment: false
+    addBadge: true
+    addLabel: true
